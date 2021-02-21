@@ -1,28 +1,25 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
 namespace TreeView
 {
-    [ValueConversion(typeof(string), typeof(BitmapImage))]
+    [ValueConversion(typeof(DirectoryItemType), typeof(BitmapImage))]
     public class HeaderToImageConverter : IValueConverter
     {
         public static HeaderToImageConverter Instance = new HeaderToImageConverter();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var path = (string)value;
-            if (path == null)
-                return null;
-            var name = MainWindow.GetFileFolderName(path);
+            
+            
             var image = "file.png";
 
-            if (string.IsNullOrEmpty(name))
-                image = "drive.png";
-            else if (new FileInfo(path).Attributes.HasFlag(FileAttributes.Directory))
-                image = "folder.png";
-            
+            switch((DirectoryItemType)value)
+            {
+                case DirectoryItemType.Drive: image = "drive.png"; break;
+                case DirectoryItemType.Folder: image = "folder.png"; break;
+            }
             return new BitmapImage(new Uri($"pack://application:,,,/images/{image}"));
         }
 
